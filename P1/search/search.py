@@ -86,8 +86,9 @@ def depthFirstSearch(problem):
 
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
+    # print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    # [((34, 15), 'South', 1), ((33, 16), 'West', 1)]
     
     
     "*** YOUR CODE HERE ***"
@@ -97,44 +98,42 @@ def depthFirstSearch(problem):
     West = Directions.WEST
     North = Directions.NORTH
     East = Directions.EAST
-
-    #print "Start:", problem.getStartState()
-    #print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    #print "Start's successors:", problem.getSuccessors(problem.getStartState())
     
+    # set up frontier and explored list
+    frontier = []
+    explored = []
+
     initialState = problem.getStartState()
+    explored.append(initialState[0])
     if problem.isGoalState(initialState):
         return []
-
     listOfSucessor = problem.getSuccessors(initialState)
     # push frontier(nodes) into Stack, set up explored list
-    frontier = []
     dfs_stack = util.Stack()
+    
+ 
     for node_temp in listOfSucessor:
-        frontier.append(node_temp[0]) 
+        # frontier.append(node_temp[0]) 
         # [node_temp[1] is the list of actions to goal] 
         node = [node_temp, []]
         dfs_stack.push(node)
-    explored = []
     
     while True:
-        
+        if dfs_stack.isEmpty():
+            break    
         currNode = dfs_stack.pop()
-        print "node poped out is: ", currNode
         currNode[1].append(currNode[0][1]) # append new path to action list
         # check for goal state
         if problem.isGoalState(currNode[0][0]):
-            print "find goal!: ",currNode[1]
             return currNode[1] # currNode[1] = list of actions to goal 
-        # add to explored
-        explored.append(currNode[0][0])
-        print "&&& state of current node is: ", currNode[0][0]
-        for successors in problem.getSuccessors(currNode[0][0]):
-            print "current success state: ", successors[0]
-            print "explored + frontier = ", explored+frontier
-            if successors[0] not in explored+frontier:
-                frontier.append(successors[0])
-                print "new successor pushed: ", [successors, currNode[1]]
+                #print "&&& state of current node is: ", currNode[0][0]
+        # (d) if node not in Explored: 
+        if currNode[0][0] not in explored:
+            # add to explored
+            explored.append(currNode[0][0])
+            for successors in problem.getSuccessors(currNode[0][0]):
+                # reason not to check if successor in the explored list:
+                # even it is the same state, but it is a different node.
                 list_goal = list(currNode[1])
                 node = [successors, list_goal] 
                 dfs_stack.push(node)
@@ -143,8 +142,6 @@ def depthFirstSearch(problem):
         # it just pass the address of old list to new list
         # use new_list = list(old_list) to copy list
 
-        if dfs_stack.isEmpty():
-            break
     return None 
 
     #print "the current node is: ", node 
@@ -161,6 +158,67 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    
+    import util # to access the stack data structure
+    from game import Directions
+    South = Directions.SOUTH
+    West = Directions.WEST
+    North = Directions.NORTH
+    East = Directions.EAST
+    
+    # set up frontier and explored list
+    frontier = []
+    explored = []
+
+
+    initialState = problem.getStartState()
+    explored.append(initialState[0]) # dont forget to push first state into explored~
+    if problem.isGoalState(initialState):
+        return []
+    
+    # get sucessors
+    listOfSucessor = problem.getSuccessors(initialState)
+    # use FIFO queue for BFS
+    bfs_queue = util.Queue()
+    # only difference between BFS and DFS is 
+    # BFS uses FIFO quese (shallowest nodes first)
+    # but DFS use stack queue ()
+
+    for node_temp in listOfSucessor:
+        # frontier.append(node_temp[0]) 
+        # [node_temp[1] is the list of actions to goal] 
+        node = [node_temp, []]
+        bfs_queue.push(node)
+
+    while True:
+        if bfs_queue.isEmpty():
+            break
+        #print "before pop, queue: ", bfs_queue.list
+        currNode = bfs_queue.pop()
+        currNode[1].append(currNode[0][1]) # append new path to action list
+        # check for goal state
+        if problem.isGoalState(currNode[0][0]):
+            return currNode[1] # currNode[1] = list of actions to goal 
+                #print "&&& state of current node is: ", currNode[0][0]
+        # (d) if node not in Explored: 
+        if currNode[0][0] not in explored:
+            # add to explored
+            explored.append(currNode[0][0])
+            for successors in problem.getSuccessors(currNode[0][0]):
+                if successors[0] not in explored:
+                    # reason not to check if successor in the explored list:
+                    # even it is the same state, but it is a different node.
+                    list_goal = list(currNode[1])
+                    node = [successors, list_goal]
+                    bfs_queue.push(node)
+        # important! 
+        # list_goal = currNode[1] does not copy the list, 
+        # it just pass the address of old list to new list
+        # use new_list = list(old_list) to copy list
+
+    return None
+
+
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
