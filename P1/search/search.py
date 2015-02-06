@@ -253,7 +253,7 @@ def uniformCostSearch(problem):
         # frontier.append(node_temp[0]) 
         # node_temp[1] returns the list of actions to goal]
         # ndoe-temp[2] returns the pathCost of the current node. 
-        node = [node_temp, []]
+        node = [node_temp, [node_temp[1]]]
         ucs_queue.push(node, problem.getCostOfActions(node[1]))
     
     while True:
@@ -261,7 +261,7 @@ def uniformCostSearch(problem):
             break
         # pop the node with lowest pathCost
         currNode = ucs_queue.pop()
-        currNode[1].append(currNode[0][1]) # append new path to action list
+        # currNode[1].append(currNode[0][1]) # append new path to action list
         # check for goal state
         if problem.isGoalState(currNode[0][0]):
             return currNode[1] # currNode[1] = list of actions to goal 
@@ -275,6 +275,9 @@ def uniformCostSearch(problem):
                     # reason not to check if successor in the explored list:
                     # even it is the same state, but it is a different node.
                     list_goal = list(currNode[1])
+                    # in UCS we have to add the next path first before it poped out.
+                    # so that the UCS can find the actual least cost path to the goal
+                    list_goal.append(successors[1])
                     node = [successors, list_goal]
                     ucs_queue.push(node, problem.getCostOfActions(node[1]))
         # important! 
