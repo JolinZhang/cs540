@@ -172,6 +172,7 @@ def breadthFirstSearch(problem):
 
 
     initialState = problem.getStartState()
+    print "the initialState is: ", initialState
     explored.append(initialState[0]) # dont forget to push first state into explored~
     if problem.isGoalState(initialState):
         return []
@@ -198,6 +199,7 @@ def breadthFirstSearch(problem):
         currNode[1].append(currNode[0][1]) # append new path to action list
         # check for goal state
         if problem.isGoalState(currNode[0][0]):
+            print currNode[1]
             return currNode[1] # currNode[1] = list of actions to goal 
                 #print "&&& state of current node is: ", currNode[0][0]
         # (d) if node not in Explored: 
@@ -300,6 +302,71 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    
+    from game import Directions
+    South = Directions.SOUTH
+    West = Directions.WEST
+    North = Directions.NORTH
+    East = Directions.EAST
+
+    # set up frontier and explored list
+    frontier = []
+    explored = []
+    pathCost = 0
+
+    initialState = problem.getStartState()
+    explored.append(initialState[0]) # dont forget to push first state into explored~
+    if problem.isGoalState(initialState):
+        return []
+    
+    # get sucessors
+    listOfSucessor = problem.getSuccessors(initialState)
+    # use priority queue for UCS
+    ucs_queue = util.PriorityQueue()
+    # difference between BFS and UCS is 
+    # BFS uses FIFO quese (shallowest nodes first)
+    # UCS is similar to BFS, but choosing the shortest path cost from
+    # current node
+
+    for node_temp in listOfSucessor:
+        # frontier.append(node_temp[0]) 
+        # node_temp[1] returns the list of actions to goal]
+        # ndoe-temp[2] returns the pathCost of the current node. 
+        node = [node_temp, [node_temp[1]]]
+        ucs_queue.push(node, problem.getCostOfActions(node[1]) + heuristic(node[0][0],problem))
+
+    
+    while True:
+        if ucs_queue.isEmpty():
+            break
+        # pop the node with lowest pathCost
+        currNode = ucs_queue.pop()
+        # currNode[1].append(currNode[0][1]) # append new path to action list
+        # check for goal state
+        if problem.isGoalState(currNode[0][0]):
+            return currNode[1] # currNode[1] = list of actions to goal 
+                #print "&&& state of current node is: ", currNode[0][0]
+        # (d) if node not in Explored: 
+        if currNode[0][0] not in explored:
+            # add to explored
+            explored.append(currNode[0][0])
+            for successors in problem.getSuccessors(currNode[0][0]):
+                if successors[0] not in explored:
+                    # reason not to check if successor in the explored list:
+                    # even it is the same state, but it is a different node.
+                    list_goal = list(currNode[1])
+                    # in UCS we have to add the next path first before it poped out.
+                    # so that the UCS can find the actual least cost path to the goal
+                    list_goal.append(successors[1])
+                    node = [successors, list_goal]
+                    ucs_queue.push(node, problem.getCostOfActions(node[1]) + heuristic(node[0][0], problem))
+        # important! 
+        # list_goal = currNode[1] does not copy the list, 
+        # it just pass the address of old list to new list
+        # use new_list = list(old_list) to copy list
+
+    return None
+    
     util.raiseNotDefined()
 
 
