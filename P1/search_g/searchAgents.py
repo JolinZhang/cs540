@@ -569,59 +569,53 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
-    position, foodGrid = state 
+     
+     
+    # best version
+    
+    position, foodGrid = state
     # chose the path from currPos to the closest point as the heursitic
     foodList = foodGrid.asList()
      
-     
-    """ 
-        maximum manhaton/density of the food
-    """
-    """
-    minDis = 100
+    #  maximize the manhaton implementation
+    
     maxDis = 0
-    foodDen = 1 # food density
-    listFoodAround = []
-    if len(foodList) == 0:
-        return 0 
-    for food in foodList:
-        fx, fy = food
-        px, py = position
-        # dis = ((fx - px)**2 + (fy - py)**2)**0.5 # eutina distance
-        dis = abs(fx - px) + abs(fy - py) # manhaton distance
-        listFoodAround.append(foodGrid[fx-1][fy])
-        listFoodAround.append(foodGrid[fx+1][fy])
-        listFoodAround.append(foodGrid[fx][fy+1])
-        listFoodAround.append(foodGrid[fx][fy-1])
-        listFoodAround.append(foodGrid[fx-1][fy+1])
-        listFoodAround.append(foodGrid[fx+1][fy+1])
-        listFoodAround.append(foodGrid[fx-1][fy-1])
-        listFoodAround.append(foodGrid[fx+1][fy-1])
-        foodDen = listFoodAround.count(False)
-        if foodDen != 0:
-            dis = dis+foodDen
+    maxPtr = [] # cord. for farthest food point
+    weight = 0
 
-    if dis > maxDis:
-        maxDis = dis
-    return maxDis
-    """ 
-
-    #  maximun manhaton implementation
-    minDis = 100
-    maxDis = 0
     if len(foodList) == 0:
         return 0
+    # find the longest path to food from curr position
     for food in foodList:
         fx, fy = food
         px, py = position
-        # dis = ((fx - px)**2 + (fy - py)**2)**0.5 # eutina distance
+        #dis = ((fx - px)**2 + (fy - py)**2)**0.5 # eutina distance
         dis = abs(fx - px) + abs(fy - py) # manhaton distance
         if dis > maxDis:
             maxDis = dis
-    return maxDis
+            maxPtr = food
+    # add weight to ensure the heurstic is max enough 
+    # so that the pacman will not choose the farthest food path 
+    # (eat the closest food first) 
+    
+    if position[0] < maxPtr[0]:
+        for food in foodList:
+            fx = food[0]
+            if fx < position[0]:
+                weight+=1
+    if position[0] > maxPtr[0]:
+        for food in foodList:
+            fx = food[0]
+            if fx > position[0]:
+                weight+=1
+    if position[0] == maxPtr[0]:
+        for food in foodList:
+            fx = food[0]
+            if fx != position[0]:
+                weight+=1
 
-
-    "*** YOUR CODE HERE ***"
+    
+    return maxDis + weight
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -640,10 +634,6 @@ class ClosestDotSearchAgent(SearchAgent):
         self.actionIndex = 0
 
     def findPathToClosestDot(self, gameState):
-        """
-        Returns a path (a list of actions) to the closest dot, starting from
-        gameState.
-        """
         # Here are some useful elements of the startState
         startPosition = gameState.getPacmanPosition()
         food = gameState.getFood()
