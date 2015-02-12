@@ -199,7 +199,6 @@ def breadthFirstSearch(problem):
         currNode[1].append(currNode[0][1]) # append new path to action list
         # check for goal state
         if problem.isGoalState(currNode[0][0]):
-            print currNode[1]
             return currNode[1] # currNode[1] = list of actions to goal 
                 #print "&&& state of current node is: ", currNode[0][0]
         # (d) if node not in Explored: 

@@ -288,8 +288,6 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
-        self.foods = 0 # record number of foods eaten
-        self.visited = [] # maintain visited cords. list
 
     def getStartState(self):
         """
@@ -298,7 +296,8 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         # state is the state of the game, contains start point, and corner cords.
-        state = self.startingPosition
+        explored = ()
+        state = (self.startingPosition, explored)
         return state
         util.raiseNotDefined()
 
@@ -306,19 +305,11 @@ class CornersProblem(search.SearchProblem):
         """
         Returns whether this search state is a goal state of the problem.
         """
-        currPos = state
-        cornerPos = self.corners
-        visited = self.visited
-        if currPos in cornerPos:
-            if currPos not in visited:
-                visited.append(currPos)
-                self.foods = self.foods + 1
-        print "corner has been visited:", visited
-        print "foods is: ", self.foods
-        if self.foods == 4: 
-            return True
-        else: 
+        explored = state[1]
+        if len(explored) != 4: 
             return False
+        else: 
+            return True
         
         
         "*** YOUR CODE HERE ***"
@@ -345,14 +336,24 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-            currentPosition = state
+            currentPosition = state[0]
             x,y = currentPosition
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
+            
+            
             if not hitsWall:
+                visitedCorner = ()
+                # get the explored list
+                visitedCorner = state[1]
+                # if the sucessor's cord is in the corner list
+                # added that into the visitedCorner list
                 success_cord = (nextx, nexty)
-                success_state = (success_cord, action, 1)
+                if success_cord not in visitedCorner and success_cord in self.corners:
+                    visitedCorner = ((success_cord),) + visitedCorner
+                    print "visited Corner are: ", visitedCorner
+                success_state = ((success_cord, visitedCorner), action, 1)
                 successors.append(success_state)
             
         self._expanded += 1 # DO NOT CHANGE
