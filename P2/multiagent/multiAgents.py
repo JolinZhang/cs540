@@ -40,13 +40,13 @@ class ReflexAgent(Agent):
         """
         # Collect legal moves and successor states
         legalMoves = gameState.getLegalActions()
-
         # Choose one of the best actions
+        print "legalMoves: ", legalMoves
         scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
         bestScore = max(scores)
+        # bestIndices - list stores all the index of best move with best scores. ex. [0, 1, 2]
         bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
         chosenIndex = random.choice(bestIndices) # Pick randomly among the best
-
         "Add more of your code here if you want to"
 
         return legalMoves[chosenIndex]
@@ -67,14 +67,80 @@ class ReflexAgent(Agent):
         to create a masterful evaluation function.
         """
         # Useful information you can extract from a GameState (pacman.py)
+        #print "hasWalls", help(currentGameState.hasWall), exit()
+        #print "getWalls", currentGameState.getWalls()
         successorGameState = currentGameState.generatePacmanSuccessor(action)
         newPos = successorGameState.getPacmanPosition()
         newFood = successorGameState.getFood()
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+        """
+        
+        print "successorGameState= ", successorGameState
+        print "newPos= ", newPos
+        print "newFood= ", dir(newFood)
+        print "newGhostStates= ", dir(newGhostStates[0])
+        print "newScaredTimes= ", newScaredTimes    
+        """
+        # initializaiton
+        numFood = newFood.count()
+        score = 100
+        gostPos = newGhostStates[0].getPosition()
+        foodList = newFood.asList()
+        gX, gY = gostPos
+        px, py = newPos
+        fx, fy = 0, 0
+        minDis = 100
+        
+        for food in foodList:
+            fX, fY = food
+            # get smallest manhaton dis from food to closest food
+            dis = abs(fX - px) + abs(fY - py)
+            # print "newPos=(",pX,pY, ")foodPos=(",fX,fY, ")"
+            # print "abs(x)=", abs(fX - pX), "abs(y)=",abs(fY - pY)
+            if dis < minDis:
+                minDis = dis
+                fx = fX
+                fy = fY
+        print "minDis=", minDis 
+        # avoid ghost
+        if (((gX - px)**2 + (gY - py)**2)**0.5) <= 1:
+            score -= 5
+        # weigh for return value
+        if minDis >= 5:
+            score += 1
+        if minDis == 4:
+            score += 2
+        if minDis == 3:
+            score += 3
+        if minDis == 2:
+            score += 4
+        if minDis == 1:
+            score += 5
+
+        # to solve wall between
+        # wall in y direction
+        if fx == px and fy > py:
+            if currentGameState.hasWall(px, py+1):
+                score -=4
+        if fx == px and fy < py:
+            if currentGameState.hasWall(px, py-1):
+                score -=4
+        # wall in x direction
+        if fy == py and fx > px:
+            if currentGameState.hasWall(px+1, py):
+                score -=4
+        if fy == py and fx < px:
+            if currentGameState.hasWall(px-1, py):
+                score -=4
 
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        # subtract numFood*5
+        # ensure pacman take the route to eat the food
+        # if food was eaten, score will be subtracted smaller
+        # so this move will be chose, since we choose the highest score 
+        return score - numFood*5
+        #return successorGameState.getScore()
 
 def scoreEvaluationFunction(currentGameState):
     """
