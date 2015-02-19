@@ -104,18 +104,19 @@ class ReflexAgent(Agent):
                 fy = fY
         print "minDis=", minDis 
         # avoid ghost
+        # reasone use elif, fish and bear hand cannot get together.
         if (((gX - px)**2 + (gY - py)**2)**0.5) <= 1:
             score -= 5
         # weigh for return value
-        if minDis >= 5:
+        elif minDis >= 5:
             score += 1
-        if minDis == 4:
+        elif minDis == 4:
             score += 2
-        if minDis == 3:
+        elif minDis == 3:
             score += 3
-        if minDis == 2:
+        elif minDis == 2:
             score += 4
-        if minDis == 1:
+        elif minDis == 1:
             score += 5
 
         # to solve wall between
