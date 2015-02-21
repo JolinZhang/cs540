@@ -41,15 +41,15 @@ class ReflexAgent(Agent):
         # Collect legal moves and successor states
         legalMoves = gameState.getLegalActions()
         # Choose one of the best actions
-        print "legalMoves: ", legalMoves
         scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
         bestScore = max(scores)
         # bestIndices - list stores all the index of best move with best scores. ex. [0, 1, 2]
         bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
         chosenIndex = random.choice(bestIndices) # Pick randomly among the best
         "Add more of your code here if you want to"
-
+        print "legalMoves: ", legalMoves
         return legalMoves[chosenIndex]
+
 
     def evaluationFunction(self, currentGameState, action):
         """
@@ -85,28 +85,44 @@ class ReflexAgent(Agent):
         # initializaiton
         numFood = newFood.count()
         score = 100
-        gostPos = newGhostStates[0].getPosition()
+        twoGhosts = False
+        numGhosts = len(newGhostStates)
+        if numGhosts == 2:
+            twoGhosts = True
+        gost1Pos = newGhostStates[0].getPosition()
+        """
+        if twoGhosts:
+            gost2Pos = newGhostStates[1].getPosition()
+            g2X, g2Y = gost2Pos
+        """
         foodList = newFood.asList()
-        gX, gY = gostPos
+        # ghosts positon
+        g1X, g1Y = gost1Pos
+        
         px, py = newPos
         fx, fy = 0, 0
         minDis = 100
-        
+       
+        # find closest food: (dis, and cords.) 
         for food in foodList:
             fX, fY = food
-            # get smallest manhaton dis from food to closest food
             dis = abs(fX - px) + abs(fY - py)
-            # print "newPos=(",pX,pY, ")foodPos=(",fX,fY, ")"
-            # print "abs(x)=", abs(fX - pX), "abs(y)=",abs(fY - pY)
             if dis < minDis:
                 minDis = dis
                 fx = fX
                 fy = fY
-        print "minDis=", minDis 
         # avoid ghost
-        # reasone use elif, fish and bear hand cannot get together.
-        if (((gX - px)**2 + (gY - py)**2)**0.5) <= 1:
+        # code for avoiding second ghost. 
+        """
+        if twoGhosts:
+            if (((g2X - px)**2 + (g2Y - py)**2)**0.5) <= 1:
+                score -= 5        
+        """
+         
+        if (((g1X - px)**2 + (g1Y - py)**2)**0.5) <= 1:
             score -= 5
+        # avoid ghost 
+        # reasone use elif, fish and bear hand cannot get together.
         # weigh for return value
         elif minDis >= 5:
             score += 1
@@ -195,7 +211,68 @@ class MinimaxAgent(MultiAgentSearchAgent):
           gameState.getNumAgents():
             Returns the total number of agents in the game
         """
+        # print "self.depth:", self.depth, "self.evaluationFunction", self.evaluationFunction(gameState)
+        # gameState.getNumAgents() # get tree depth
+        # gameState.generateSuccessor(agentIndex, action)
+        # legalActions = gameState.getLegalActions(0)
+        # print "legalActions are: ", gameState.getLegalActions(0) 
+        # print "Successors are: ", dir(gameState.generateSuccessor(0, 'East'))
+        # print "gameState format:", dir(gameState)
+        # print " ", help(gameState.getLegalActions)
+        # gameState.generateSuccessor(0, 'East') is the state for points
+        depth = self.depth
+        PACMAN = 0
+        print "the maximum is: ", self.minimax(gameState, 1, PACMAN)
+        
+        print "exit", exit()
+        return ['West']
+        util.raiseNotDefined()
+        
         "*** YOUR CODE HERE ***"
+    def minimax(self, gameState, depth, currAgent):
+        currDepth = depth
+        numAgents = gameState.getNumAgents()
+        print "Scores: ", self.evaluationFunction(gameState),"@level:", currDepth
+        print "numofAgents: ", numAgents
+        if (currAgent > numAgents - 1):
+            currAgent = 0
+            currDepth += 1
+        # terminate test: only when it reach the depth. !!! might need to concern ghost
+        if (gameState.isWin() or gameState.isLose()):
+            return self.evaluationFunction(gameState)
+        # cutoff test:
+        if (currDepth > self.depth):
+            return self.evaluationFunction(gameState)
+        # Max
+        elif currAgent == 0: # pacman chooses the max
+            print "current Agent is: ", currAgent
+            legalActs = gameState.getLegalActions(currAgent)
+            print "legalActs: ", legalActs
+            listMaxScore = []
+            successorStates = []
+            for acts in legalActs:
+                successorStates.append(gameState.generateSuccessor(currAgent, acts))
+            print "sucessorStates are: ", successorStates
+            for states in successorStates:
+                listMaxScore.append(self.minimax(states, currDepth, (currAgent+1)))
+            print "pacman listMaxScore are: ", listMaxScore
+            print "return from agent", currAgent
+            return max(listMaxScore)
+        # Min
+        elif currAgent != 0:
+            print "*****************************"
+            print "current Agent is: ", currAgent
+            legalActs = gameState.getLegalActions(currAgent)
+            listMinScore = []
+            successorStates = []
+            for acts in legalActs:
+                successorStates.append(gameState.generateSuccessor(currAgent, acts))
+            for states in successorStates:
+                listMinScore.append(self.minimax(states, currDepth, (currAgent+1)))
+            print "ghosts listMaxScore are: ", listMinScore
+            print "return from agent", currAgent
+            return min(listMinScore)     
+        
         util.raiseNotDefined()
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
