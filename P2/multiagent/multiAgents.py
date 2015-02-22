@@ -211,40 +211,33 @@ class MinimaxAgent(MultiAgentSearchAgent):
           gameState.getNumAgents():
             Returns the total number of agents in the game
         """
-        # print "self.depth:", self.depth, "self.evaluationFunction", self.evaluationFunction(gameState)
-        # gameState.getNumAgents() # get tree depth
-        # gameState.generateSuccessor(agentIndex, action)
-        # legalActions = gameState.getLegalActions(0)
-        # print "legalActions are: ", gameState.getLegalActions(0) 
-        # print "Successors are: ", dir(gameState.generateSuccessor(0, 'East'))
-        # print "gameState format:", dir(gameState)
-        # print " ", help(gameState.getLegalActions)
-        # gameState.generateSuccessor(0, 'East') is the state for points
         PACMAN = 0
         GHOST = 1
         legalActs = gameState.getLegalActions(0)
         listOfNxtStates = [gameState.generateSuccessor(0, actions) for actions in legalActs]
-        listOfMinScores = [self.minimax(nxtGameState, 1, GHOST, 0) for nxtGameState in listOfNxtStates]
+        # MAX chooses maximum score from list of min scores.
+        listOfMinScores = [self.minimax(nxtGameState, 1, GHOST, 1) for nxtGameState in listOfNxtStates]
         maxIndexList = []
         maxScore = max(listOfMinScores)
         for i in range(0,len(listOfMinScores)):
             if listOfMinScores[i] == maxScore:
                 maxIndexList.append(i)
         chosenIndex = random.choice(maxIndexList)
+        # index of corresponding actions.
         return legalActs[chosenIndex] 
         
         util.raiseNotDefined()
         
         "*** YOUR CODE HERE ***"
     def minimax(self, gameState, depth, currAgent, visitedAgent):
-        currDepth = depth
+        currDepth = depth 
         numAgents = gameState.getNumAgents()
-        ## print "numofAgents: ", numAgents
         if (currAgent > numAgents - 1):
             currAgent = 0
-        if (visitedAgent == numAgents):
+        # increment depth when visitedAgent equal num of current agents in the game. 
+        if (visitedAgent != 0 and visitedAgent % numAgents == 0):
             currDepth += 1
-        # terminate test: only when it reach the depth. !!! might need to concern ghost
+        # terminate test: only when it reach the depth.
         if (gameState.isWin() or gameState.isLose()):
             return self.evaluationFunction(gameState)
         # cutoff test:
@@ -252,23 +245,16 @@ class MinimaxAgent(MultiAgentSearchAgent):
             return self.evaluationFunction(gameState)
         # Max
         elif currAgent == 0: # pacman chooses the max
-            ## print "current Agent is: ", currAgent
             legalActs = gameState.getLegalActions(currAgent)
-            ## print "legalActs: ", legalActs
             listMaxScore = []
             successorStates = []
             for acts in legalActs:
                 successorStates.append(gameState.generateSuccessor(currAgent, acts))
-            ## print "sucessorStates are: ", successorStates
             for states in successorStates:
                 listMaxScore.append(self.minimax(states, currDepth, (currAgent+1), (visitedAgent+1)))
-            ##print "pacman listMaxScore are: ", listMaxScore
-            ##print "return from agent", currAgent
             return max(listMaxScore)
         # Min
         elif currAgent != 0:
-            ##print "*****************************"
-            ##print "current Agent is: ", currAgent
             legalActs = gameState.getLegalActions(currAgent)
             listMinScore = []
             successorStates = []
@@ -276,8 +262,6 @@ class MinimaxAgent(MultiAgentSearchAgent):
                 successorStates.append(gameState.generateSuccessor(currAgent, acts))
             for states in successorStates:
                 listMinScore.append(self.minimax(states, currDepth, (currAgent+1), (visitedAgent+1)))
-            ##print "ghosts listMaxScore are: ", listMinScore
-            ##print "return from agent", currAgent
             return min(listMinScore)     
         
         util.raiseNotDefined()
