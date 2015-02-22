@@ -220,22 +220,29 @@ class MinimaxAgent(MultiAgentSearchAgent):
         # print "gameState format:", dir(gameState)
         # print " ", help(gameState.getLegalActions)
         # gameState.generateSuccessor(0, 'East') is the state for points
-        depth = self.depth
         PACMAN = 0
-        print "the maximum is: ", self.minimax(gameState, 1, PACMAN)
+        GHOST = 1
+        legalActs = gameState.getLegalActions(0)
+        listOfNxtStates = [gameState.generateSuccessor(0, actions) for actions in legalActs]
+        listOfMinScores = [self.minimax(nxtGameState, 1, GHOST, 0) for nxtGameState in listOfNxtStates]
+        maxIndexList = []
+        maxScore = max(listOfMinScores)
+        for i in range(0,len(listOfMinScores)):
+            if listOfMinScores[i] == maxScore:
+                maxIndexList.append(i)
+        chosenIndex = random.choice(maxIndexList)
+        return legalActs[chosenIndex] 
         
-        print "exit", exit()
-        return ['West']
         util.raiseNotDefined()
         
         "*** YOUR CODE HERE ***"
-    def minimax(self, gameState, depth, currAgent):
+    def minimax(self, gameState, depth, currAgent, visitedAgent):
         currDepth = depth
         numAgents = gameState.getNumAgents()
-        print "Scores: ", self.evaluationFunction(gameState),"@level:", currDepth
-        print "numofAgents: ", numAgents
+        ## print "numofAgents: ", numAgents
         if (currAgent > numAgents - 1):
             currAgent = 0
+        if (visitedAgent == numAgents):
             currDepth += 1
         # terminate test: only when it reach the depth. !!! might need to concern ghost
         if (gameState.isWin() or gameState.isLose()):
@@ -245,32 +252,32 @@ class MinimaxAgent(MultiAgentSearchAgent):
             return self.evaluationFunction(gameState)
         # Max
         elif currAgent == 0: # pacman chooses the max
-            print "current Agent is: ", currAgent
+            ## print "current Agent is: ", currAgent
             legalActs = gameState.getLegalActions(currAgent)
-            print "legalActs: ", legalActs
+            ## print "legalActs: ", legalActs
             listMaxScore = []
             successorStates = []
             for acts in legalActs:
                 successorStates.append(gameState.generateSuccessor(currAgent, acts))
-            print "sucessorStates are: ", successorStates
+            ## print "sucessorStates are: ", successorStates
             for states in successorStates:
-                listMaxScore.append(self.minimax(states, currDepth, (currAgent+1)))
-            print "pacman listMaxScore are: ", listMaxScore
-            print "return from agent", currAgent
+                listMaxScore.append(self.minimax(states, currDepth, (currAgent+1), (visitedAgent+1)))
+            ##print "pacman listMaxScore are: ", listMaxScore
+            ##print "return from agent", currAgent
             return max(listMaxScore)
         # Min
         elif currAgent != 0:
-            print "*****************************"
-            print "current Agent is: ", currAgent
+            ##print "*****************************"
+            ##print "current Agent is: ", currAgent
             legalActs = gameState.getLegalActions(currAgent)
             listMinScore = []
             successorStates = []
             for acts in legalActs:
                 successorStates.append(gameState.generateSuccessor(currAgent, acts))
             for states in successorStates:
-                listMinScore.append(self.minimax(states, currDepth, (currAgent+1)))
-            print "ghosts listMaxScore are: ", listMinScore
-            print "return from agent", currAgent
+                listMinScore.append(self.minimax(states, currDepth, (currAgent+1), (visitedAgent+1)))
+            ##print "ghosts listMaxScore are: ", listMinScore
+            ##print "return from agent", currAgent
             return min(listMinScore)     
         
         util.raiseNotDefined()
