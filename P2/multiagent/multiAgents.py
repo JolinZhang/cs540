@@ -270,14 +270,86 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     """
       Your minimax agent with alpha-beta pruning (question 3)
     """
-
+    INFINITE = float('inf')
+    NEG_INFINITE = float('-inf')
+    
     def getAction(self, gameState):
         """
           Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
+        PACMAN = 0
+        GHOST = 1
+        index = self.alphaBetaPrune(gameState, AlphaBetaAgent.NEG_INFINITE, AlphaBetaAgent.INFINITE, 1, PACMAN, 0)
+        legalActs = gameState.getLegalActions(PACMAN)
+        return legalActs[index]
+        
         util.raiseNotDefined()
+    
+    def alphaBetaPrune(self, gameState, bestMin, bestMax, depth, currAgent, visitedAgent):
+        currDepth = depth
+        numAgents = gameState.getNumAgents()
+        if (currAgent > numAgents - 1):
+            currAgent = 0
+        
+        # increment depth when visitedAgent equal num of current agents in the game. 
+        if (visitedAgent != 0 and visitedAgent % numAgents == 0):
+            currDepth += 1
+        
+        # terminal-test:
+        if (gameState.isWin() or gameState.isLose()):
+            return self.evaluationFunction(gameState)
+        # cut-off test:
+        """
+        # following code help to debug and understand the a-b minimax
+        print "currDepth is: ", currDepth
+        print "self.depth: ", self.depth
+        print "visitedAgent: ", visitedAgent
+        print "numAgents: ", numAgents
+        print "currAgent: ", currAgent
+        """
+        if (currDepth > self.depth):
+            return self.evaluationFunction(gameState)
+        # Max
+        elif currAgent == 0: # pacman chooses the max
+            successorStates = []
+            listOfVals = []
+            value = AlphaBetaAgent.NEG_INFINITE
+            legalActs = gameState.getLegalActions(currAgent)
+            for acts in legalActs:
+                state = gameState.generateSuccessor(currAgent, acts)
+                listOfVals.append(self.alphaBetaPrune(state, bestMin, bestMax, currDepth, (currAgent+1), (visitedAgent+1)))
+                listOfVals.append(value)
+                value = max(listOfVals)
+                
+                if value > bestMax:
+                    return value
+                bestMin = max(bestMin, value)
+                # final step for MAX to choose the max element
+                if (len(listOfVals) > 2*len(gameState.getLegalActions(self.index)) - 1) and visitedAgent == 0:
+                    for i in range(0, len(listOfVals)/2):
+                        if bestMin == listOfVals[i*2]:
+                            return i
+            return value
 
+        # Min
+        elif currAgent != 0: 
+            successorStates = []
+            listOfVals = []
+            value = AlphaBetaAgent.INFINITE
+            legalActs = gameState.getLegalActions(currAgent)
+            for acts in legalActs:
+                state = gameState.generateSuccessor(currAgent, acts)
+                listOfVals.append(self.alphaBetaPrune(state, bestMin, bestMax, currDepth, (currAgent+1), (visitedAgent+1)))
+                listOfVals.append(value)
+                value = min(listOfVals)
+                #print "bestMin", bestMin
+                if value < bestMin:
+                    return value
+                bestMax = min(bestMax, value)
+            return value
+        util.raiseNotDefined()    
+            
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
       Your expectimax agent (question 4)
