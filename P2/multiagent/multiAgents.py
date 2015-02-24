@@ -363,6 +363,58 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
           legal moves.
         """
         "*** YOUR CODE HERE ***"
+        PACMAN = 0
+        GHOST = 1
+        legalActs = gameState.getLegalActions(0)
+        listOfNxtStates = [gameState.generateSuccessor(0, actions) for actions in legalActs]
+        # MAX chooses maximum score from list of min scores.
+        listOfMinScores = [self.expectimax(nxtGameState, 1, GHOST, 1) for nxtGameState in listOfNxtStates]
+        maxIndexList = []
+        maxScore = max(listOfMinScores)
+        for i in range(0,len(listOfMinScores)):
+            if listOfMinScores[i] == maxScore:
+                maxIndexList.append(i)
+        chosenIndex = random.choice(maxIndexList)
+        # index of corresponding actions.
+        return legalActs[chosenIndex] 
+        
+        util.raiseNotDefined()
+        
+        "*** YOUR CODE HERE ***"
+    def expectimax(self, gameState, depth, currAgent, visitedAgent):
+        currDepth = depth 
+        numAgents = gameState.getNumAgents()
+        if (currAgent > numAgents - 1):
+            currAgent = 0
+        # increment depth when visitedAgent equal num of current agents in the game. 
+        if (visitedAgent != 0 and visitedAgent % numAgents == 0):
+            currDepth += 1
+        # terminate test: only when it reach the depth.
+        if (gameState.isWin() or gameState.isLose()):
+            return self.evaluationFunction(gameState)
+        # cutoff test:
+        if (currDepth > self.depth):
+            return self.evaluationFunction(gameState)
+        # Max
+        elif currAgent == 0: # pacman chooses the max
+            legalActs = gameState.getLegalActions(currAgent)
+            listMaxScore = []
+            successorStates = []
+            for acts in legalActs:
+                successorStates.append(gameState.generateSuccessor(currAgent, acts))
+            for states in successorStates:
+                listMaxScore.append(self.expectimax(states, currDepth, (currAgent+1), (visitedAgent+1)))
+            return max(listMaxScore)
+        # expectival
+        elif currAgent != 0:
+            legalActs = gameState.getLegalActions(currAgent)
+            listMinScore = []
+            successorStates = []
+            for acts in legalActs:
+                successorStates.append(gameState.generateSuccessor(currAgent, acts))
+            for states in successorStates:
+                listMinScore.append(self.expectimax(states, currDepth, (currAgent+1), (visitedAgent+1)))
+            return float(sum(listMinScore))/len(listMinScore)
         util.raiseNotDefined()
 
 def betterEvaluationFunction(currentGameState):

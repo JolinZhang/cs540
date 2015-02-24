@@ -53,16 +53,20 @@ from `getAction()`. cause cutoff method malfunctioed.
 ***     The values next to c1, c2, and cx are the values of the evaluation function, not  
 ***     necessarily the correct minimax backup.  
 
- 
+```
 index = self.alphaBetaPrune(gameState, AlphaBetaAgent.NEG_INFINITE, AlphaBetaAgent.INFINITE, 0, PACMAN, 0)  
 
-`
+```
 changed to: depth =1, visitedAgent = 0 will fixed  
 
-`
+```
 index = self.alphaBetaPrune(gameState, AlphaBetaAgent.NEG_INFINITE, AlphaBetaAgent.INFINITE, 1, PACMAN, 0)  
 
-`
+```
 
 ## q4:  
- 
+### Question q4: 5/5 ###  
+
+We just changed the MIN of the minimax to AVG, everything else should leave  
+the same as minimax  
+
