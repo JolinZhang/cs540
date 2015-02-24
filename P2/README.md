@@ -70,3 +70,47 @@ index = self.alphaBetaPrune(gameState, AlphaBetaAgent.NEG_INFINITE, AlphaBetaAge
 We just changed the MIN of the minimax to AVG, everything else should leave  
 the same as minimax  
 
+## q5:  
+a follow up update on question 1 to enhance the evaluation function when reach the limiting depth.  
+in q1, we set the food as the goal, but we also need to care about the ghost @ the same time.  
+we also add in the condition of regarding walls.
+
+we might also need to added the factor to eat podwer and hunting the ghost.
+
+```
+Pacman emerges victorious! Score: 363
+Pacman emerges victorious! Score: 573
+Pacman emerges victorious! Score: 386
+Pacman emerges victorious! Score: 911
+Pacman emerges victorious! Score: 933
+Pacman emerges victorious! Score: 696
+Pacman emerges victorious! Score: 607
+Pacman emerges victorious! Score: 974
+Pacman emerges victorious! Score: 964
+Pacman emerges victorious! Score: 1068
+Average Score: 747.5
+Scores:        363.0, 573.0, 386.0, 911.0, 933.0, 696.0, 607.0, 974.0, 964.0, 1068.0
+Win Rate:      10/10 (1.00)
+Record:        Win, Win, Win, Win, Win, Win, Win, Win, Win, Win
+*** FAIL: test_cases/q5/grade-agent.test (5 of 6 points)
+***     747.5 average score (1 of 2 points)
+***         Grading scheme:
+***          < 500:  0 points
+***         >= 500:  1 points
+***         >= 1000:  2 points
+***     10 games not timed out (1 of 1 points)
+***         Grading scheme:
+***          < 0:  fail
+***         >= 0:  0 points
+***         >= 10:  1 points
+***     10 wins (3 of 3 points)
+***         Grading scheme:
+***          < 1:  fail
+***         >= 1:  1 points
+***         >= 5:  2 points
+***         >= 10:  3 points
+
+### Question q5: 5/6 ###
+
+```
+

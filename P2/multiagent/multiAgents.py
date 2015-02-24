@@ -423,8 +423,155 @@ def betterEvaluationFunction(currentGameState):
       evaluation function (question 5).
 
       DESCRIPTION: <write something here so we know what you did>
+	"""
+	
+	
+    # Useful information you can extract from a GameState (pacman.py)
+    #print "hasWalls", help(currentGameState.hasWall), exit()
+    #print "getWalls", currentGameState.getWalls()
+    newPos = currentGameState.getPacmanPosition()
+    newFood = currentGameState.getFood()
+    newGhostStates = currentGameState.getGhostStates()
+    newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+    newCapsules = currentGameState.getCapsules()
+    #print "scaredTimes: ", newScaredTimes[0] 
+
+    """ 
+    print "successorGameState= ", successorGameState
+    print "newPos= ", newPos
+    print "newFood= ", dir(newFood)
+    print "newGhostStates= ", dir(newGhostStates[0])
+    print "newScaredTimes= ", newScaredTimes    
     """
+    # initializaiton
+    numFood = newFood.count()
+    score = 100
+    twoGhosts = False
+    numGhosts = len(newGhostStates)
+    if numGhosts == 2:
+        twoGhosts = True
+    gost1Pos = newGhostStates[0].getPosition()
+    """
+    if twoGhosts:
+        gost2Pos = newGhostStates[1].getPosition()
+        g2X, g2Y = gost2Pos
+    """
+    # objects positons
+    foodList = newFood.asList()
+    g1X, g1Y = gost1Pos             # ghost1 pos
+    px, py = newPos                 # pacman pos
+    fx, fy = 0, 0                   # closest food pos
+ 
+    #cap1x, cap1y = newCapsules[0]   # capsules 1 pos
+    #cap2x, cap2y = newCapsules[1]   # capsules 2 pos
+    minDis = 100                    
+    
+    # find closest food: (dis, and cords.) 
+    for food in foodList:
+        fX, fY = food
+        dis = abs(fX - px) + abs(fY - py)
+        if dis < minDis:
+            minDis = dis
+            fx = fX
+            fy = fY
+    
+    # avoid ghost
+    # code for avoiding second ghost. 
+    """
+    if twoGhosts:
+        if (((g2X - px)**2 + (g2Y - py)**2)**0.5) <= 1:
+            score -= 5        
+    """
+    """
+    if (newScaredTimes[0] == 0 or
+        newScaredTimes[0] == 39):
+    """  
+      #print "in eat food"
+    if (((g1X - px)**2 + (g1Y - py)**2)**0.5) <= 1:
+        score -= 8
+    # avoid ghost 
+    # reasone use elif, fish and bear hand cannot get together.
+    # weigh for return value
+    elif minDis >= 5:
+        score += 2
+    elif minDis == 4:
+        score += 4
+    elif minDis == 3:
+        score += 6
+    elif minDis == 2:
+        score += 8
+    elif minDis == 1:
+        score += 10
+
+    # if capsules close to you and gost, close to you also.
+    # in this world, i will not to be worry about eating the capsules
+    # (since the capsules are in btw foods)
+    # when scaredTime != 0, hunt the ghost! (if the ghost is close to the base, dont hunt it)
+    #print "newScaredTimes[0]", newScaredTimes[0], " < 37", newScaredTimes[0] < 37
+    """
+    if (newScaredTimes[0] < 37 and newScaredTimes[0] != 0):
+        #print "inside hunt ghost"
+        disToGhostX = abs(px - g1X)
+        disToGhostY = abs(py - g1Y)
+        # attract pacman to get closer to ghost in y-direction
+        if (disToGhostY == 5):
+            score += 1
+        elif (disToGhostY == 4):  
+            score += 3
+        elif (disToGhostY == 3):  
+            score += 5
+        elif (disToGhostY == 2):  
+            score += 7
+        elif (disToGhostY == 1):  
+            score += 9
+        elif (disToGhostY == 0):  
+            score += 14
+        
+        #  
+        if (disToGhostY >= 8):
+            score += 1
+        elif (disToGhostY == 7):
+            score += 3
+        elif (disToGhostY == 6):
+            score += 5
+        elif (disToGhostX == 5):
+            score += 7
+        elif (disToGhostX == 4):
+            score += 9
+        elif (disToGhostX == 3):
+            score += 13
+        elif (disToGhostX == 2):
+            score += 15
+        elif (disToGhostX == 1):
+            score += 17
+        elif (disToGhostX == 0):
+            score += 20
+    """ 
+
+    # to solve wall between
+    # wall in y direction
+    
+    if fx == px and fy > py:
+        if currentGameState.hasWall(px, py+1):
+            score -=2
+    if fx == px and fy < py:
+        if currentGameState.hasWall(px, py-1):
+            score -=2
+    # wall in x direction
+    if fy == py and fx > px:
+        if currentGameState.hasWall(px+1, py):
+            score -=2
+    if fy == py and fx < px:
+        if currentGameState.hasWall(px-1, py):
+            score -=2
+
     "*** YOUR CODE HERE ***"
+    # subtract numFood*5
+    # ensure pacman take the route to eat the food
+    # if food was eaten, score will be subtracted smaller
+    # so this move will be chose, since we choose the highest score 
+    return score - numFood*5
+    #return successorGameState.getScore()
     util.raiseNotDefined()
 
 # Abbreviation
