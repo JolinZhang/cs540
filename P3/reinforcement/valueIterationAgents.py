@@ -55,11 +55,22 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
-        # initialize all the states with 0 utility. 
-        print "self.iterations", self.iterations
-        i = 0
-        print "it is round: ", i
-        i += 1        
+
+        # print mdp.getStates(), exit()
+        # value iteration
+        for i in range(self.iterations):
+            # U1 is {(0, 1): 0, (0, 0): 0, 'TERMINAL_STATE': 0, (0, 2): 0}
+            U1 = dict([(s, 0) for s in mdp.getStates()])
+            R, T, gamma = mdp.getReward, mdp.getTransitionStatesAndProbs, self.discount
+            epsilon = 0.001
+            while True:
+                U = U1.copy()
+                delta = 0
+                for s in mdp.getStates():
+                    U1[s] = R(s, None, None) + gamma * max([sum([p * U[s1] for (p, s1) in T(s, a)]) for a in mdp.getPossibleActions(s)])
+                    delta = max(delta, abs(U1[s] - U[s]))
+                if delta < epsilon * (1 - gamma) / gamma:
+                    return U
 
 
     def getValue(self, state):
