@@ -46,31 +46,29 @@ class ValueIterationAgent(ValueEstimationAgent):
         # possible actions: 'exit', 'north', 'west', 'south', 'east' 
         # getT function [((0, 1), 1.0), ((0, 0), 0.0), ((0, 2), 0.0)]
         states = mdp.getStates()
-        #print "mdp.getStates()", mdp.getStates()
-        #print "getPossibleActions(state)", mdp.getPossibleActions(states[0]) 
-        #print "getPossibleActions(state)", mdp.getPossibleActions(states[1])
-        #print "getPossibleActions(state)", mdp.getPossibleActions(states[2])
-        #print "getPossibleActions(state)", mdp.getPossibleActions(states[3]) 
         
-
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
 
         # print mdp.getStates(), exit()
         # value iteration
+        
         for i in range(self.iterations):
+            # print "total number of iterations: ", self.iterations
             # U1 is {(0, 1): 0, (0, 0): 0, 'TERMINAL_STATE': 0, (0, 2): 0}
-            U1 = dict([(s, 0) for s in mdp.getStates()])
+            # U1 = dict([(s, 0) for s in mdp.getStates()])
+            U1 = self.values.copy()
             R, T, gamma = mdp.getReward, mdp.getTransitionStatesAndProbs, self.discount
-            epsilon = 0.001
-            while True:
-                U = U1.copy()
-                delta = 0
-                for s in mdp.getStates():
-                    U1[s] = R(s, None, None) + gamma * max([sum([p * U[s1] for (p, s1) in T(s, a)]) for a in mdp.getPossibleActions(s)])
-                    delta = max(delta, abs(U1[s] - U[s]))
-                if delta < epsilon * (1 - gamma) / gamma:
-                    return U
+            U = U1.copy()
+            delta = 0
+            for s in mdp.getStates():
+                # when in TERMAINAL_STATE, there will be no action, 
+                # in that case, the max() function will receive empty list.
+                if len(mdp.getPossibleActions(s)) != 0:
+                    U1[s] = R(s, None, None) + gamma * max([sum([p * U[s1] for (s1, p) in T(s, a)]) for a in mdp.getPossibleActions(s)])
+                else: 
+                    U1[s] = R(s, None, None)
+            self.values = U1
 
 
     def getValue(self, state):
@@ -117,11 +115,15 @@ class ValueIterationAgent(ValueEstimationAgent):
         index = 0
         for action in actionList:
             qValList.append(self.computeQValueFromValues(state, action))
+            #print "qValue: ",self.computeQValueFromValues(state, action), "action: ", action
+            #print "qValListit: ", qValList
         maxQ = max(qValList)
+        #print "maxQ is: ", maxQ
         for i in range(len(qValList)):
             if (maxQ == qValList[i]):
                 index = i
-        return actionList[index]        
+        #print "actionChoose: ", actionList[index] 
+        return actionList[index] 
         
 
         "*** YOUR CODE HERE ***"
