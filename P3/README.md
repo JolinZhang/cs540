@@ -64,6 +64,11 @@ Important parts:
 2.`def update` follow lecture slice on LEC15 pg.20  
 
 ### Q5: Epsilon Greedy
+Stright forward:  
+1. take random choice from the list of legal actions with probability of `self.epsilon`  
+2. take the best action by calling the `computeActionFromQValues` function with the probability of `1 - self.epsilon`  
+
+
 ### Q6: Bridge Crossing Revisited
 ### Q7: Q-Learning and Pacman
 ### Q8: Approximate Q-Learning
