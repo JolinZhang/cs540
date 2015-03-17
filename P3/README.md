@@ -58,6 +58,11 @@ make the longer path to 10 less attractive. (since the longer the path is, the l
 `python gridworld.py -a value -i 100 -g DiscountGrid --discount 0.25 --noise 0.2 -r -0.08`
 
 ### Q4: Q-Learning
+Important parts:  
+1. within init "You can initialize Q-values here...":  it is important that we use need to understand that: `self.qVals = util.Counter()` even though it is similar to the intitilization in the value iteration. However, the counter now, we should use [state, action] pair to map to Qvalue of that state and action pair, which is similar to the counter in value iteration with [state] -> uValue. 
+
+2.`def update` follow lecture slice on LEC15 pg.20  
+
 ### Q5: Epsilon Greedy
 ### Q6: Bridge Crossing Revisited
 ### Q7: Q-Learning and Pacman

@@ -7,8 +7,6 @@
 # 
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
-# (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
-# Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
 
@@ -64,12 +62,11 @@ class ValueIterationAgent(ValueEstimationAgent):
             for s in mdp.getStates():
                 # when in TERMAINAL_STATE, there will be no action, 
                 # in that case, the max() function will receive empty list.
-                if len(mdp.getPossibleActions(s)) != 0:
+                if not mdp.isTerminal(s):
                     U1[s] = R(s, None, None) + gamma * max([sum([p * U[s1] for (s1, p) in T(s, a)]) for a in mdp.getPossibleActions(s)])
                 else: 
                     U1[s] = R(s, None, None)
             self.values = U1
-
 
     def getValue(self, state):
         """
