@@ -70,8 +70,40 @@ Stright forward:
 
 
 ### Q6: Bridge Crossing Revisited
+
+????
+
 ### Q7: Q-Learning and Pacman
+
+No code need to added, simply just passed.  
+
 ### Q8: Approximate Q-Learning
 
+confusions:  
+1. weight: w1 is a counter: `{((0, 0), 'exit'): 1.0}`
+
+key: `((0, 0), 'exit')` maps to:   
+value: `1.0`  
+
+How to access the value of specific weight:    
+
+```python
+features = self.featExtractor.getFeatures(state, action)    
+for f in features:    
+    print "weight: ", self.weights[f]
+    print "feature value: ", features[f]
+```
+
+2. How to perform dot product:  
+
+Dot-product: (pic from wikipedia)
+![alt text](http://upload.wikimedia.org/math/9/4/d/94d092558445b6aa77739fa99dea4dbc.png "")
+
+
+```python
+for f in feature:
+     qValue += feature[f] * weight[f]
+return qValue
+```
 
 

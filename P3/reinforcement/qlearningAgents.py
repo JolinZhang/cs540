@@ -215,6 +215,15 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
+        weight = self.getWeights()
+        feature = self.featExtractor.getFeatures(state, action)
+        qValue = 0
+        #print "weight: ", weight
+        #print "feature: ", feature
+        for f in feature:
+            qValue += feature[f] * weight[f]
+        return qValue
+        
         util.raiseNotDefined()
 
     def update(self, state, action, nextState, reward):
@@ -222,6 +231,30 @@ class ApproximateQAgent(PacmanQAgent):
            Should update your weights based on transition
         """
         "*** YOUR CODE HERE ***"
+        
+
+        w1 = self.weights.copy()
+        alpha = self.alpha
+        discount = self.discount
+        feature = self.featExtractor.getFeatures(state, action)
+        w = w1.copy()
+
+        listQvals = []
+        for a in self.getLegalActions(nextState):
+            listQvals.append(self.getQValue(nextState, a))
+        if (nextState == 'TERMINAL_STATE' or not listQvals):
+            maxQ = 0
+        else:
+            maxQ = max(listQvals)
+        
+        # update for EACH wi.
+        
+        for f in feature:
+            w1[f] = w[f] + alpha * (reward + discount * maxQ - self.getQValue(state, action)) * feature[f] 
+        self.weights = w1
+        print "w1", w1
+        return self.weights
+        
         util.raiseNotDefined()
 
     def final(self, state):
