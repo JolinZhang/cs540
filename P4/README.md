@@ -29,4 +29,26 @@
 ### Output from console:
 Question q1: 3/3 
 
+
+## Question 2 (4 points): Exact Inference with Time Elapse
+
+### Experiments: 
+- `newPosDist[p]` returns the newPostDist[p] = Pr( ghost is at position p at time t + 1 | ghost is at position oldPos at time t )
+- we are looking for the `Prob(newPos)`
+- with the help of `self.beliefs[p]` (givens the probeblity of the oldPos `Prob(oldPos)`), we can easily find `Prob(newPos)`
+- `Prob(newPos) = Pr( ghost is at position p at time t + 1 | ghost is at position oldPos at time t )` * `prob(oldPos)`
+### Bug!
+
+```
+for newPos, prob in newPosDist.items():
+       allPossible[newPos] = prob * self.beliefs[p]
+```
+- previously, i used `allPossible[newPos] = prob * self.beliefs[p]` inside the forloop of update, and that was actually wrong!
+- since it is updating the probability various times, therefore it should adds up all the previouse values of the probability. 
+- fix: `allPossible[newPos] += prob * self.beliefs[p]`. Thanks Alfeld to help finding the bug!
+
+
+## Question 3 (3 points): Exact Inference Full Test
+
+
   

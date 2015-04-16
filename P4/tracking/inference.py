@@ -158,9 +158,9 @@ class ExactInference(InferenceModule):
             if emissionModel[trueDistance] > 0:
                 allPossible[p] = emissionModel[trueDistance] * self.beliefs[p]
 	# put ghost into jail, set probability of ghost in that cord.(cord. for jail cell) to 1
-	if(noisyDistance == None):
-	    p = self.getJailPosition()
-	    allPossible[p] = 1.0
+        if(noisyDistance == None):
+	        p = self.getJailPosition()
+	        allPossible[p] = 1.0
 						
         "*** END YOUR CODE HERE ***"
 
@@ -222,7 +222,29 @@ class ExactInference(InferenceModule):
         positions after a time update from a particular position.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        allPossible = util.Counter() # updated probabilitliy
+        newPosDist = util.Counter()
+        for p in self.beliefs:
+            newPosDist = self.getPositionDistribution(self.setGhostPosition(gameState, p))
+            for newPos, prob in newPosDist.items():
+                allPossible[newPos] += prob * self.beliefs[p]
+        # print "jail positon: ", self.getJailPosition()
+        allPossible.normalize()
+        self.beliefs = allPossible
+        
+        '''
+        print newPosDist, exit()
+        print "self.beliefs: ", self.beliefs
+        # newPosDist = self.getPositionDistribution(self.setGhostPosition(gameState, oldPos))
+        for p in self.beliefs:
+            newPosDist[p] = self.getPositionDistribution(self.setGhostPosition(gameState, p))
+        
+        print "newPosDist: ", newPosDist.items()
+        for newPos, prob in newPosDist.items():
+            print "newPos: ", newPos, "prob: ", prob
+        #for p in self.legalPositions:
+        #    allPossible[p] = newPosDist[p] * self.beliefs[]
+        '''
 
     def getBeliefDistribution(self):
         return self.beliefs
