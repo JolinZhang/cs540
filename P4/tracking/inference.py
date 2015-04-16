@@ -163,7 +163,7 @@ class ExactInference(InferenceModule):
 	        allPossible[p] = 1.0
 						
         "*** END YOUR CODE HERE ***"
-
+        
         allPossible.normalize()
         self.beliefs = allPossible
 	# util.raiseNotDefined()

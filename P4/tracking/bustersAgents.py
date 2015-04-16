@@ -130,15 +130,15 @@ class GreedyBustersAgent(BustersAgent):
 
     def chooseAction(self, gameState):
         """
-        First computes the most likely position of each ghost that has
-        not yet been captured, then chooses an action that brings
-        Pacman closer to the closest ghost (according to mazeDistance!).
+        @@ First computes the most likely position @@ of each ghost that has
+        not yet been captured, then @@ chooses an action @@ that brings
+        Pacman closer to the @@ closest ghost @@ (according to mazeDistance!).
 
-        To find the mazeDistance between any two positions, use:
-          self.distancer.getDistance(pos1, pos2)
+        To find the maze @@ Distance between any two positions @@ , use:
+          @@ self.distancer.getDistance(pos1, pos2) @@
 
-        To find the successor position of a position after an action:
-          successorPosition = Actions.getSuccessor(position, action)
+        To find the @@ successor position @@ of a position after an action:
+          @@ successorPosition = Actions.getSuccessor(position, action) @@
 
         livingGhostPositionDistributions, defined below, is a list of
         util.Counter objects equal to the position belief
@@ -162,5 +162,34 @@ class GreedyBustersAgent(BustersAgent):
         livingGhostPositionDistributions = \
             [beliefs for i, beliefs in enumerate(self.ghostBeliefs)
              if livingGhosts[i+1]]
+        # get ghosts' current positions from beliefs 
+        # find the shortest ghost index
+        # move toward that ghost
+        # return the action
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        allDistance = util.Counter()
+        
+        #len of livingGhostPositionDistributions indicates the number of
+        #ghosts that survive
+        for x in range(len(livingGhostPositionDistributions)):
+            #the xth ghost's position's distribution
+            ghostPosDist = livingGhostPositionDistributions[x]
+            #find the most possible position of the xth ghost
+            ghostPos = max(ghostPosDist, key=ghostPosDist.get)                     
+            #find the distance between ghostPos and the pacman
+            distance = self.distancer.getDistance(pacmanPosition, ghostPos)                
+            #all the distance with the ghost position into dictionary
+            allDistance[ghostPos] = distance
+        #if len(allDistance) is 0:
+            #handle later: if all ghosts are dead
+            #return 'Stop'
+        shortestPos = min(allDistance, key=allDistance.get) 
+        shortestDistance = self.distancer.getDistance(pacmanPosition, shortestPos)
+  
+        allAct = util.Counter()
+        for nextAct in legal:
+            #find the pacman's next position
+            pacmanNextPos = Actions.getSuccessor(pacmanPosition, nextAct)     
+            allAct[nextAct] = self.distancer.getDistance(pacmanNextPos, shortestPos)
+        trueAct = min(allAct, key=allAct.get)
+        return trueAct

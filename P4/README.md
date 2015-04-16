@@ -50,5 +50,10 @@ for newPos, prob in newPosDist.items():
 
 ## Question 3 (3 points): Exact Inference Full Test
 
-
+- get ghosts' current positions from beliefs (pick the largest probability)
+- find the shortest ghost index
+- get all legal action for pacman in `legal`
+- get all the newPos.
+- get distance from pacman to all newPos after select a legal move
+- select the shortest distance, and return the corresponding action. 
   
