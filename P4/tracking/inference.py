@@ -369,40 +369,17 @@ class ParticleFilter(InferenceModule):
         a belief distribution.
         """
         "*** YOUR CODE HERE ***"
-        newDist = self.getBeliefDistribution()
-        
-        allPossible = util.Counter()
+        allPossible = util.Counter() # updated probabilitliy
+        newPosDist = util.Counter()
         updateList = []
-        
-        
-        
-        #handle ghost eaten
-        if noisyDistance is None:
-            #changed 1 to 0, might have error
-            allPossible[self.getJailPosition()] = 1
-        
-        #handle all 0 weight
-        if newDist.totalCount is 0:
-            self.initializeUniformly(gameState)
-        
-        #handle resampling
         for p in self.legalPositions:
-            trueDistance = util.manhattanDistance(p, pacmanPosition)
-            
-            if emissionModel[trueDistance] >0:
-                allPossible[p] += emissionModel[trueDistance]*newDist[p]
-        
-        #print '***********', allPossible
-        for p, prob in allPossible.items():
-            #print '*************', round(prob*self.numParticles)
-            for x in range(round(prob*self.numParticles)):
-                
-                updateList.append(p)
-        #print '***************', updateList
-        
+            newPosDist = self.getPositionDistribution(self.setGhostPosition(gameState, p))          
+            for newPos, prob in newPosDist.items():
+                for x in range(int(round(prob * self.numParticles))):
+                    updateList.append(newPos)
+                    
         #update self.particleList
         self.particleList = updateList
-        util.raiseNotDefined()
 
     def getBeliefDistribution(self):
         """
