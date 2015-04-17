@@ -56,4 +56,19 @@ for newPos, prob in newPosDist.items():
 - get all the newPos.
 - get distance from pacman to all newPos after select a legal move
 - select the shortest distance, and return the corresponding action. 
+
+
+## Question 4 (3 points): Approximate Inference Observation
+
+
+1. `initializeUniformly` - here you first create a variable that will store a list of particles and then initialize that list. create a variable that will store a list of particles.
+ 
+2. `getBeliefDistribution` - convert a list of particles into a belief distribution and return that distribution as a Counter object. This means that you should never keep track of the belief distribution itself (simplly return `newBeliefs`), but rather keep track of the particles (only keep update on `self.particleList`) and create a distribution only when specifically asked for it.
+ 
+3. `observe` - update the `self.particleList` (the list of the particles) by the given evidences of the probability from the sensor. 
+
+
+
+ 
+
   

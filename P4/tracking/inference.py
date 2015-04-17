@@ -279,6 +279,12 @@ class ParticleFilter(InferenceModule):
         weight with each position) is incorrect and may produce errors.
         """
         "*** YOUR CODE HERE ***"
+        # store particles in a list!@
+        self.particleList = []
+        #indexCounter is the index of self.legalPositions
+        for x in range(len(self.legalPositions)):
+            for y in range(self.numParticles/len(self.legalPositions)):
+                self.particleList.append(self.legalPositions[x])
 
     def observe(self, observation, gameState):
         """
@@ -301,6 +307,8 @@ class ParticleFilter(InferenceModule):
              weight for a belief distribution can be found by calling totalCount
              on a Counter object
 
+        ## total weight of a belief distribution = totalCount on Counter Project.
+
         util.sample(Counter object) is a helper method to generate a sample from
         a belief distribution.
 
@@ -311,7 +319,40 @@ class ParticleFilter(InferenceModule):
         emissionModel = busters.getObservationDistribution(noisyDistance)
         pacmanPosition = gameState.getPacmanPosition()
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        
+        newDist = self.getBeliefDistribution()
+        
+        allPossible = util.Counter()
+        updateList = []
+        
+        
+        
+        #handle ghost eaten
+        if noisyDistance is None:
+            #changed 1 to 0, might have error
+            allPossible[self.getJailPosition()] = 1
+        
+        #handle resampling
+        for p in self.legalPositions:
+            trueDistance = util.manhattanDistance(p, pacmanPosition)
+            
+            if emissionModel[trueDistance] >0:
+                allPossible[p] += emissionModel[trueDistance]*newDist[p]
+        
+        #print '***********', allPossible
+        for p, prob in allPossible.items():
+            # print '*************', round(prob*self.numParticles)
+            for x in range(int(round(prob*self.numParticles))):
+                updateList.append(p)
+        
+        #handle all 0 weight
+        if len(updateList) is 0:
+            self.initializeUniformly(gameState)
+            updateList = self.particleList
+
+        #update self.particleList
+        self.particleList = updateList
+        
 
     def elapseTime(self, gameState):
         """
@@ -328,6 +369,39 @@ class ParticleFilter(InferenceModule):
         a belief distribution.
         """
         "*** YOUR CODE HERE ***"
+        newDist = self.getBeliefDistribution()
+        
+        allPossible = util.Counter()
+        updateList = []
+        
+        
+        
+        #handle ghost eaten
+        if noisyDistance is None:
+            #changed 1 to 0, might have error
+            allPossible[self.getJailPosition()] = 1
+        
+        #handle all 0 weight
+        if newDist.totalCount is 0:
+            self.initializeUniformly(gameState)
+        
+        #handle resampling
+        for p in self.legalPositions:
+            trueDistance = util.manhattanDistance(p, pacmanPosition)
+            
+            if emissionModel[trueDistance] >0:
+                allPossible[p] += emissionModel[trueDistance]*newDist[p]
+        
+        #print '***********', allPossible
+        for p, prob in allPossible.items():
+            #print '*************', round(prob*self.numParticles)
+            for x in range(round(prob*self.numParticles)):
+                
+                updateList.append(p)
+        #print '***************', updateList
+        
+        #update self.particleList
+        self.particleList = updateList
         util.raiseNotDefined()
 
     def getBeliefDistribution(self):
@@ -338,6 +412,15 @@ class ParticleFilter(InferenceModule):
         Counter object)
         """
         "*** YOUR CODE HERE ***"
+        
+        newBeliefs = util.Counter()
+        for p in self.particleList:
+            newBeliefs[p]+=1
+        newBeliefs.normalize()
+        
+        
+        return newBeliefs
+        
         util.raiseNotDefined()
 
 class MarginalInference(InferenceModule):
