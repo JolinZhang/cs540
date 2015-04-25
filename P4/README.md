@@ -68,7 +68,14 @@ for newPos, prob in newPosDist.items():
 3. `observe` - update the `self.particleList` (the list of the particles) by the given evidences of the probability from the sensor. 
 
 
+## Question 5 (4 points): Approximate Inference with Time Elapse
+
+- use the `elapseTime` from `ExactInference` to get the updated distribution dictionary. 
+- used the normized data set convert that to a list of particles.
+- update the new partile list.
+
+
+## Question 6 (4 points): Joint Particle Filter Observation
 
  
-
   

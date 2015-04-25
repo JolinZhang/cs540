@@ -279,13 +279,14 @@ class ParticleFilter(InferenceModule):
         weight with each position) is incorrect and may produce errors.
         """
         "*** YOUR CODE HERE ***"
+
         # store particles in a list!@
         self.particleList = []
         #indexCounter is the index of self.legalPositions
         for x in range(len(self.legalPositions)):
             for y in range(self.numParticles/len(self.legalPositions)):
                 self.particleList.append(self.legalPositions[x])
-
+        
     def observe(self, observation, gameState):
         """
         Update beliefs based on the given distance observation. Make sure to
@@ -337,6 +338,7 @@ class ParticleFilter(InferenceModule):
             if emissionModel[trueDistance] >0:
                 allPossible[p] += emissionModel[trueDistance]*newDist[p]
         
+
         #print '***********', allPossible
         for p, prob in allPossible.items():
             # print '*************', round(prob*self.numParticles)
@@ -486,7 +488,6 @@ class JointParticleFilter:
                 self.legalPosPairs.append((self.legalPositions[x],self.legalPositions[y]))
                 for z in range((1+int(self.numParticles/(len(self.legalPositions) * len(self.legalPositions))))):
                     self.particleList.append((self.legalPositions[x],self.legalPositions[y]))
-    
     def addGhostAgent(self, agent):
         """
         Each ghost agent is registered separately and stored (in case they are
@@ -531,34 +532,39 @@ class JointParticleFilter:
         if len(noisyDistances) < self.numGhosts:
             return
         emissionModels = [busters.getObservationDistribution(dist) for dist in noisyDistances]
-		
+        allPossible = util.Counter()
         
         "*** YOUR CODE HERE ***"
-
-        newDist = self.getBeliefDistribution()
+        
         allPossible = util.Counter()
         updateList = []
         
-        # handle ghost into jail
-     	for index, particle in enumerate(self.particleList):
-       		for i in range(self.numGhosts):
-        		if noisyDistances[i] == None:
-        			#changed 1 to 0, might have error
-           			particle1 = self.getParticleWithGhostInJail(particle, i)
-           			# print "difference ", particle1, "**", particle
-           			allPossible[particle1] += 1
+        for index, p in enumerate(self.particleList):
+            if noisyDistances[0] == None and noisyDistances[1] == None:
+            	# if both noisyDistances return None at same time:
+            	pNew = self.getParticleWithGhostInJail(p, 0)
+            	p = self.getParticleWithGhostInJail(pNew, 1)
+            	prob = 1.0
+            elif noisyDistances[0] == None or noisyDistances[1] == None: 
+            	if noisyDistances[0] == None:
+                    #changed 1 to 0, might have error
+                    p = self.getParticleWithGhostInJail(p, 0)
+                    distance = util.manhattanDistance(p[1], pacmanPosition)
+                    prob = emissionModels[1][distance]
+                else:
+                    p = self.getParticleWithGhostInJail(p, 1)
+                    distance = util.manhattanDistance(p[0], pacmanPosition)
+                    prob = emissionModels[0][distance]
+            else:
+                trueDistance0 = util.manhattanDistance(p[0], pacmanPosition)
+            	trueDistance1 = util.manhattanDistance(p[1], pacmanPosition)
+            	# if emissionModels[trueDistance] > 0:
+            	newPosProb0 = emissionModels[0][trueDistance0]
+            	newPosProb1 = emissionModels[1][trueDistance1]
+            	prob = newPosProb0 * newPosProb1
+            allPossible[p] += prob
         
-        # resample steps
-        # 0 is ghost 0, 1 is ghost 1 
-        for p in self.particleList:
-            trueDistance0 = util.manhattanDistance(p[0], pacmanPosition)
-            trueDistance1 = util.manhattanDistance(p[1], pacmanPosition)
-            # if emissionModels[trueDistance] > 0:
-            newPosProb0 = emissionModels[0][trueDistance0]
-            newPosProb1 = emissionModels[1][trueDistance1]
-            allPossible[p] += newPosProb0 * newPosProb1
 
-        
         # all particles receive 0 weight/ update particle list
         if len(allPossible) == 0:
             self.initializeParticles()
@@ -623,17 +629,25 @@ class JointParticleFilter:
               agents are always the same.
         """
         newParticles = []
-        for oldParticle in self.particles:
+        allPossible = util.Counter() # updated probabilitliy
+        updateList = []
+        ## old beliefs
+        oldPosDist = util.Counter()
+        oldPosDist = self.getBeliefDistribution()
+        
+        for oldParticle in self.particleList:
             newParticle = list(oldParticle) # A list of ghost positions
             # now loop through and update each entry in newParticle...
-            
             "*** YOUR CODE HERE ***"
-            
-            
+            newPosDistG0 = getPositionDistributionForGhost(setGhostPositions(gameState, newParticle), 0, self.ghostAgents[0])
+            newPosDistG1 = getPositionDistributionForGhost(setGhostPositions(gameState, newParticle), 1, self.ghostAgents[1])
+            newParticle[0] = util.sample(newPosDistG0)
+            newParticle[1] = util.sample(newPosDistG1) 
             "*** END YOUR CODE HERE ***"
             newParticles.append(tuple(newParticle))
-        self.particles = newParticles
-
+        self.particleList = newParticles
+    
+		
     def getBeliefDistribution(self):
         "*** YOUR CODE HERE ***"
         newBeliefs = util.Counter()
