@@ -108,6 +108,7 @@ class ReflexCaptureAgent(CaptureAgent):
   def registerInitialState(self, gameState):
     self.start = gameState.getAgentPosition(self.index)
     CaptureAgent.registerInitialState(self, gameState)
+    self.numFood = foodLeft = len(self.getFood(gameState).asList())
 
   def chooseAction(self, gameState):
     """
@@ -135,6 +136,26 @@ class ReflexCaptureAgent(CaptureAgent):
           bestDist = dist
       return bestAction
 
+    # myTeam's state
+    myTeam = [gameState.getAgentState(i) for i in self.getTeam(gameState)]
+    # once you have 9 points, go back to deposite your points
+    # self.index == 0 additional condition so that defense will not be affect and go back to base
+    if not myTeam[0].isPacman and not myTeam[1].isPacman and self.index == 0:
+        self.numFood = foodLeft
+    elif myTeam[0].isPacman and not myTeam[1].isPacman and self.index == 0:
+        self.foodEaten = self.numFood - foodLeft
+        if (self.foodEaten == 9):
+            bestDist = 9999
+            for action in actions:
+                successor = self.getSuccessor(gameState, action)
+                pos2 = successor.getAgentPosition(self.index)
+                dist = self.getMazeDistance(self.start,pos2)
+                if dist < bestDist:
+                    bestAction = action
+                    bestDist = dist
+            return bestAction
+    
+      
     return random.choice(bestActions)
 
   def getSuccessor(self, gameState, action):
@@ -196,7 +217,6 @@ class OffensiveReflexAgent(ReflexCaptureAgent):
     features['successorScore'] = -len(foodList)#self.getScore(successor)
     myPos = successor.getAgentState(self.index).getPosition()
     # Compute distance to the nearest food
-
     if len(foodList) > 0: # This should always be True,  but better safe than sorry
       minDistance = min([self.getMazeDistance(myPos, food) for food in foodList])
       features['distanceToFood'] = minDistance
@@ -204,7 +224,7 @@ class OffensiveReflexAgent(ReflexCaptureAgent):
     
     # try to avoid the ghost from opponent ghost
     enemies = [successor.getAgentState(i) for i in self.getOpponents(successor)]
-    print "enemies", enemies[0]
+    print "enemies", enemies[0].scaredTimer
     print "enemies", enemies[1]
     ghosts = [a for a in enemies if not a.isPacman and a.getPosition() != None]
     # if ghosts around five step, do not try to look for food any more
@@ -216,7 +236,7 @@ class OffensiveReflexAgent(ReflexCaptureAgent):
         else:
             features['deadend'] = 0
         # when pacman have four choices of action. complicate issue
-        if len(successor.getLegalActions(self.index)) == 4:
+        if len(gameState.getLegalActions(self.index)) == 4:
             successorActions = successor.getLegalActions(self.index)
             # successorSec is the sucessor of successor
             successorSec = [self.getSuccessor(successor, a) for a in successorActions]
@@ -230,8 +250,16 @@ class OffensiveReflexAgent(ReflexCaptureAgent):
     #####features['numInvaders'] = len(ghosts)
     if len(ghosts) > 0:  
         dists = [self.getEuclideanDistance(myPos, ghost.getPosition()) for ghost in ghosts]
-        print "action: ", action, "dists: ", dists
-        features['ghostDistance'] = min(dists) 
+        features['ghostDistance'] = min(dists)
+        minDis = min(dists)
+        index = 0
+        ## handle when oppoent get scared
+        for i in range(len(dists)):
+            if minDis == dists[i]:
+                index = i
+        if enemies[index].scaredTimer is not 0:
+            print "scared!"
+            features['ghostDistance'] == 0
     if action == Directions.STOP: features['stop'] = 1
 
     return features
