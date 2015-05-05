@@ -144,7 +144,7 @@ class ReflexCaptureAgent(CaptureAgent):
         self.numFood = foodLeft
     elif myTeam[0].isPacman and not myTeam[1].isPacman and self.index == 0:
         self.foodEaten = self.numFood - foodLeft
-        if (self.foodEaten == 3):
+        if (self.foodEaten == 4):
             bestDist = 9999
             for action in actions:
                 successor = self.getSuccessor(gameState, action)
@@ -240,26 +240,8 @@ class OffensiveReflexAgent(ReflexCaptureAgent):
             print "catch ghost!"
             features['distanceToInv'] = disToPac
 
-    # if ghosts around five step, do not try to look for food any more
-    if ghosts:
-        features['distanceToFood'] = 0
-        # pacman do not want to get into shallow deadend
-        if len(successor.getLegalActions(self.index)) == 2:
-            features['deadend'] = 1
-        else:
-            features['deadend'] = 0
-        # when pacman have four choices of action. complicate issue
-        if len(gameState.getLegalActions(self.index)) == 4:
-            successorActions = successor.getLegalActions(self.index)
-            # successorSec is the sucessor of successor
-            successorSec = [self.getSuccessor(successor, a) for a in successorActions]
-            listofActions = [s.getLegalActions(self.index) for s in successorSec]
-            #print "listofActions: ", listofActions
-            deadEndList = [len(s.getLegalActions(self.index)) for s in successorSec]
-            #print "corresponding length of all actions: ", deadEndList
-            for numActions in deadEndList:
-                if numActions == 2:
-                    features['deadend'] += 1
+    
+
     #####features['numInvaders'] = len(ghosts)
     if len(ghosts) > 0:  
         dists = [self.getEuclideanDistance(myPos, ghost.getPosition()) for ghost in ghosts]
@@ -272,7 +254,31 @@ class OffensiveReflexAgent(ReflexCaptureAgent):
                 index = i
         if enemies[index].scaredTimer != 0:
             print "scared!"
-            features['ghostDistance'] == 0
+            features['ghostDistance'] = 0
+        else:
+        	# returns noise distance to each agents in current state.
+       		print successor.getAgentDistances()
+        	# makeObservation
+        	#print help(successor.getDistanceProb), exit()
+			# if ghosts around five step, do not try to look for food any more
+        	features['distanceToFood'] = 0
+        	# pacman do not want to get into shallow deadend
+        	if len(successor.getLegalActions(self.index)) == 2:
+        		features['deadend'] = 1
+        	else:
+        		features['deadend'] = 0
+        	# when pacman have four choices of action. complicate issue
+        	if len(gameState.getLegalActions(self.index)) == 4:
+        		successorActions = successor.getLegalActions(self.index)
+        		# successorSec is the sucessor of successor
+        		successorSec = [self.getSuccessor(successor, a) for a in successorActions]
+        		listofActions = [s.getLegalActions(self.index) for s in successorSec]
+        		#print "listofActions: ", listofActions
+        		deadEndList = [len(s.getLegalActions(self.index)) for s in successorSec]
+        		#print "corresponding length of all actions: ", deadEndList
+        		for numActions in deadEndList:
+        			if numActions == 2:
+        				features['deadend'] += 1
     if action == Directions.STOP: features['stop'] = 1
 
     return features
