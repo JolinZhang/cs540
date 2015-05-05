@@ -45,57 +45,7 @@ def createTeam(firstIndex, secondIndex, isRed,
 
   # The following line is an example only; feel free to change it.
   return [eval(first)(firstIndex), eval(second)(secondIndex)]
-
-#################
-# Sample Agent #
-################
-
-class DummyAgent(CaptureAgent):
-  """
-  A Dummy agent to serve as an example of the necessary agent structure.
-  You should look at baselineTeam.py for more details about how to
-  create an agent as this is the bare minimum.
-  """
-
-  def registerInitialState(self, gameState):
-    """
-    This method handles the initial setup of the
-    agent to populate useful fields (such as what team
-    we're on).
-
-    A distanceCalculator instance caches the maze distances
-    between each pair of positions, so your agents can use:
-    self.distancer.getDistance(p1, p2)
-
-    IMPORTANT: This method may run for at most 15 seconds.
-    """
-
-    '''
-    Make sure you do not delete the following line. If you would like to
-    use Manhattan distances instead of maze distances in order to save
-    on initialization time, please take a look at
-    CaptureAgent.registerInitialState in captureAgents.py.
-    '''
-    CaptureAgent.registerInitialState(self, gameState)
-
-    '''
-    Your initialization code goes here, if you need any.
-    '''
-
-
-  def chooseAction(self, gameState):
-    """
-    Picks among actions randomly.
-    """
-    actions = gameState.getLegalActions(self.index)
-
-    '''
-    You should change this in your own agent.
-    '''
-
-    return random.choice(actions)
-    
-    
+   
 ######################
 # ReflexCaptureAgent #
 ######################
@@ -107,8 +57,9 @@ class ReflexCaptureAgent(CaptureAgent):
  
   def registerInitialState(self, gameState):
     self.start = gameState.getAgentPosition(self.index)
-    CaptureAgent.registerInitialState(self, gameState)
+    CaptureAgent.registerInitialState(self, gameState) 
     self.numFood = foodLeft = len(self.getFood(gameState).asList())
+    self.initialFoodNum = len(self.getFood(gameState).asList())
 
   def chooseAction(self, gameState):
     """
@@ -144,7 +95,7 @@ class ReflexCaptureAgent(CaptureAgent):
         self.numFood = foodLeft
     elif myTeam[0].isPacman and not myTeam[1].isPacman and self.index == 0:
         self.foodEaten = self.numFood - foodLeft
-        if (self.foodEaten == 2):
+        if (self.foodEaten == round(self.initialFoodNum / 5)):
             bestDist = 9999
             for action in actions:
                 successor = self.getSuccessor(gameState, action)
@@ -231,6 +182,7 @@ class OffensiveReflexAgent(ReflexCaptureAgent):
     
     if len(invaders) != 0:
         invaderPos = [a.getPosition() for a in invaders]
+    ghostPos = [g.getPosition() for g in ghosts]
 
     # if enemy's pacman is close(within 1 distance) to my ghost(pacman)
     if not successor.getAgentState(self.index).isPacman and len(invaders) != 0:
@@ -240,31 +192,13 @@ class OffensiveReflexAgent(ReflexCaptureAgent):
             #print "catch ghost!"
             features['distanceToInv'] = disToPac
 
-    # if ghosts around five step, do not try to look for food any more
-    if ghosts:
-
-
-
-        features['distanceToFood'] = 0
-        # pacman do not want to get into shallow deadend
-        if len(successor.getLegalActions(self.index)) == 2:
-            features['deadend'] = 1
-        else:
-            features['deadend'] = 0
-        # when pacman have four choices of action. complicate issue
-        if len(gameState.getLegalActions(self.index)) == 4:
-            successorActions = successor.getLegalActions(self.index)
-            # successorSec is the sucessor of successor
-            successorSec = [self.getSuccessor(successor, a) for a in successorActions]
-            listofActions = [s.getLegalActions(self.index) for s in successorSec]
-            #print "listofActions: ", listofActions
-            deadEndList = [len(s.getLegalActions(self.index)) for s in successorSec]
-            #print "corresponding length of all actions: ", deadEndList
-            for numActions in deadEndList:
-                if numActions == 2:
-                    features['deadend'] += 1
-    #####features['numInvaders'] = len(ghosts)
-    if len(ghosts) > 0:  
+    # handle both ghosts are at the boarder and inifinte looping with each other
+    
+    if not successor.getAgentState(self.index).isPacman and len(ghosts) != 0:
+        myPos = successor.getAgentState(self.index).getPosition()
+        disToPac = min([self.getMazeDistance(myPos, g) for g in ghostPos])
+        features['ghostDistance'] = disToPac
+    elif len(ghosts) > 0:
         dists = [self.getEuclideanDistance(myPos, ghost.getPosition()) for ghost in ghosts]
         features['ghostDistance'] = min(dists)
         minDis = min(dists)
@@ -275,7 +209,31 @@ class OffensiveReflexAgent(ReflexCaptureAgent):
                 index = i
         if enemies[index].scaredTimer != 0:
             #print "scared!"
-            features['ghostDistance'] == 0
+            features['ghostDistance'] = 0
+        else:
+        	# returns noise distance to each agents in current state.
+       		#print successor.getAgentDistances()
+        	# makeObservation
+        	#print help(successor.getDistanceProb), exit()
+			# if ghosts around five step, do not try to look for food any more
+        	features['distanceToFood'] = 0
+        	# pacman do not want to get into shallow deadend
+        	if len(successor.getLegalActions(self.index)) == 2:
+        		features['deadend'] = 1
+        	else:
+        		features['deadend'] = 0
+        	# when pacman have four choices of action. complicate issue
+        	if len(gameState.getLegalActions(self.index)) == 4:
+        		successorActions = successor.getLegalActions(self.index)
+        		# successorSec is the sucessor of successor
+        		successorSec = [self.getSuccessor(successor, a) for a in successorActions]
+        		listofActions = [s.getLegalActions(self.index) for s in successorSec]
+        		#print "listofActions: ", listofActions
+        		deadEndList = [len(s.getLegalActions(self.index)) for s in successorSec]
+        		#print "corresponding length of all actions: ", deadEndList
+        		for numActions in deadEndList:
+        			if numActions == 2:
+        				features['deadend'] += 1
     if action == Directions.STOP: features['stop'] = 1
 
     return features
@@ -319,7 +277,6 @@ class DefensiveReflexAgent(ReflexCaptureAgent):
       for a in invaders:
           #print "Ghost position", a.getPosition(), "MyPosition: ", myPos
           features['invaderDistance'] = min(dists)
-
     if action == Directions.STOP: features['stop'] = 1
     rev = Directions.REVERSE[gameState.getAgentState(self.index).configuration.direction]
     if action == rev: features['reverse'] = 1
