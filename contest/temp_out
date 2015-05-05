@@ -7,245 +7,7 @@ Blue team baselineTeam with {}:
 Loading Team: baselineTeam.py
 Arguments: {}
 Red team starts
-Time is up.
-The Red team wins by 8 points.
-Run 1
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Red team starts
-Time is up.
-The Red team wins by 12 points.
-Run 2
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Blue team starts
-Time is up.
-The Red team wins by 9 points.
-Run 3
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Blue team starts
-Time is up.
-The Red team wins by 8 points.
-Run 4
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Blue team starts
-Time is up.
-The Red team wins by 2 points.
-Run 5
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Red team starts
-Time is up.
-The Red team wins by 4 points.
-Run 6
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Blue team starts
-Time is up.
-The Red team wins by 7 points.
-Run 7
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Red team starts
-Time is up.
-The Red team wins by 8 points.
-Run 8
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Blue team starts
-Time is up.
-The Red team wins by 4 points.
-Run 9
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Red team starts
-Time is up.
-The Red team wins by 10 points.
-Run 10
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Red team starts
-Time is up.
-The Red team wins by 12 points.
-Run 11
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Red team starts
-Time is up.
-The Red team wins by 12 points.
-Run 12
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Red team starts
-Time is up.
-The Red team wins by 9 points.
-Run 13
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Blue team starts
-Time is up.
-The Red team wins by 13 points.
-Run 14
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Red team starts
-Time is up.
-The Red team wins by 7 points.
-Run 15
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Red team starts
 The Blue team has returned at least 18 of the opponents' dots.
-Run 16
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Red team starts
-Time is up.
-The Red team wins by 6 points.
-Run 17
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Red team starts
-Time is up.
-The Red team wins by 7 points.
-Run 18
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Red team starts
-Time is up.
-The Red team wins by 10 points.
-Run 19
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Red team starts
-Time is up.
-The Red team wins by 5 points.
-Run 20
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Red team starts
 Run 1
 
 Red team myTeam_test with {}:
@@ -257,7 +19,7 @@ Loading Team: baselineTeam.py
 Arguments: {}
 Red team starts
 Time is up.
-The Red team wins by 12 points.
+The Red team wins by 8 points.
 Run 2
 
 Red team myTeam_test with {}:
@@ -269,7 +31,7 @@ Loading Team: baselineTeam.py
 Arguments: {}
 Blue team starts
 Time is up.
-The Red team wins by 6 points.
+The Red team wins by 10 points.
 Run 3
 
 Red team myTeam_test with {}:
@@ -279,9 +41,9 @@ Arguments: {}
 Blue team baselineTeam with {}:
 Loading Team: baselineTeam.py
 Arguments: {}
-Blue team starts
+Red team starts
 Time is up.
-The Red team wins by 2 points.
+The Red team wins by 8 points.
 Run 4
 
 Red team myTeam_test with {}:
@@ -291,7 +53,7 @@ Arguments: {}
 Blue team baselineTeam with {}:
 Loading Team: baselineTeam.py
 Arguments: {}
-Blue team starts
+Red team starts
 Time is up.
 The Red team wins by 14 points.
 Run 5
@@ -305,7 +67,7 @@ Loading Team: baselineTeam.py
 Arguments: {}
 Red team starts
 Time is up.
-The Red team wins by 11 points.
+The Red team wins by 14 points.
 Run 6
 
 Red team myTeam_test with {}:
@@ -317,20 +79,8 @@ Loading Team: baselineTeam.py
 Arguments: {}
 Red team starts
 Time is up.
-The Red team wins by 4 points.
-Run 7
-
-Red team myTeam_test with {}:
-Loading Team: myTeam_test.py
-Arguments: {}
-
-Blue team baselineTeam with {}:
-Loading Team: baselineTeam.py
-Arguments: {}
-Red team starts
-Time is up.
 The Red team wins by 10 points.
-Run 8
+Run 7
 
 Red team myTeam_test with {}:
 Loading Team: myTeam_test.py
@@ -342,6 +92,18 @@ Arguments: {}
 Blue team starts
 Time is up.
 The Red team wins by 6 points.
+Run 8
+
+Red team myTeam_test with {}:
+Loading Team: myTeam_test.py
+Arguments: {}
+
+Blue team baselineTeam with {}:
+Loading Team: baselineTeam.py
+Arguments: {}
+Red team starts
+Time is up.
+The Red team wins by 8 points.
 Run 9
 
 Red team myTeam_test with {}:
@@ -353,7 +115,7 @@ Loading Team: baselineTeam.py
 Arguments: {}
 Blue team starts
 Time is up.
-The Red team wins by 6 points.
+The Red team wins by 4 points.
 Run 10
 
 Red team myTeam_test with {}:
@@ -365,7 +127,7 @@ Loading Team: baselineTeam.py
 Arguments: {}
 Blue team starts
 Time is up.
-The Red team wins by 8 points.
+The Red team wins by 10 points.
 Run 11
 
 Red team myTeam_test with {}:
@@ -375,8 +137,9 @@ Arguments: {}
 Blue team baselineTeam with {}:
 Loading Team: baselineTeam.py
 Arguments: {}
-Red team starts
-['__doc__', '__eq__', '__hash__', '__init__', '__module__', '__str__', 'configuration', 'copy', 'getDirection', 'getPosition', 'isPacman', 'numCarrying', 'numReturned', 'scaredTimer', 'start']
+Blue team starts
+Time is up.
+The Red team wins by 14 points.
 Run 12
 
 Red team myTeam_test with {}:
@@ -387,7 +150,7 @@ Blue team baselineTeam with {}:
 Loading Team: baselineTeam.py
 Arguments: {}
 Blue team starts
-['__doc__', '__eq__', '__hash__', '__init__', '__module__', '__str__', 'configuration', 'copy', 'getDirection', 'getPosition', 'isPacman', 'numCarrying', 'numReturned', 'scaredTimer', 'start']
+The Blue team has returned at least 18 of the opponents' dots.
 Run 13
 
 Red team myTeam_test with {}:
@@ -397,7 +160,9 @@ Arguments: {}
 Blue team baselineTeam with {}:
 Loading Team: baselineTeam.py
 Arguments: {}
-Blue team starts
+Red team starts
+Time is up.
+The Red team wins by 7 points.
 Run 14
 
 Red team myTeam_test with {}:
@@ -408,7 +173,8 @@ Blue team baselineTeam with {}:
 Loading Team: baselineTeam.py
 Arguments: {}
 Blue team starts
-['__doc__', '__eq__', '__hash__', '__init__', '__module__', '__str__', 'configuration', 'copy', 'getDirection', 'getPosition', 'isPacman', 'numCarrying', 'numReturned', 'scaredTimer', 'start']
+Time is up.
+The Red team wins by 4 points.
 Run 15
 
 Red team myTeam_test with {}:
@@ -418,7 +184,9 @@ Arguments: {}
 Blue team baselineTeam with {}:
 Loading Team: baselineTeam.py
 Arguments: {}
-Blue team starts
+Red team starts
+Time is up.
+The Red team wins by 10 points.
 Run 16
 
 Red team myTeam_test with {}:
@@ -428,7 +196,9 @@ Arguments: {}
 Blue team baselineTeam with {}:
 Loading Team: baselineTeam.py
 Arguments: {}
-Blue team starts
+Red team starts
+Time is up.
+The Red team wins by 4 points.
 Run 17
 
 Red team myTeam_test with {}:
@@ -439,6 +209,8 @@ Blue team baselineTeam with {}:
 Loading Team: baselineTeam.py
 Arguments: {}
 Red team starts
+Time is up.
+The Red team wins by 7 points.
 Run 18
 
 Red team myTeam_test with {}:
@@ -448,7 +220,9 @@ Arguments: {}
 Blue team baselineTeam with {}:
 Loading Team: baselineTeam.py
 Arguments: {}
-Red team starts
+Blue team starts
+Time is up.
+The Red team wins by 10 points.
 Run 19
 
 Red team myTeam_test with {}:
@@ -458,5 +232,7 @@ Arguments: {}
 Blue team baselineTeam with {}:
 Loading Team: baselineTeam.py
 Arguments: {}
-Red team starts
+Blue team starts
+Time is up.
+The Red team wins by 12 points.
 Run 20
